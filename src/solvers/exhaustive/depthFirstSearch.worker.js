@@ -7,12 +7,12 @@ import {
   EVALUATING_SEGMENT_COLOR
 } from "../../constants";
 
-const setDifference = (setA, setB) => {
-  const ret = new Set(setA);
-  setB.forEach(p => {
-    ret.delete(p);
+const pointLeft = (points, visited) => {
+  const set_of_points = new Set(points);
+  visited.forEach(point => {
+    set_of_points.delete(point);
   });
-  return ret;
+  return set_of_points;
 };
 
 const dfs = async (points, path = [], visited = null, overallBest = null) => {
@@ -22,7 +22,7 @@ const dfs = async (points, path = [], visited = null, overallBest = null) => {
     points = new Set(points);
     visited = new Set();
   }
-
+  // Visualizing code
   self.setEvaluatingPaths(
     () => ({
       paths: [
@@ -41,8 +41,9 @@ const dfs = async (points, path = [], visited = null, overallBest = null) => {
   await self.sleep();
 
   // figure out what points are left from this point
-  const available = setDifference(points, visited);
+  const available = pointLeft(points, visited);
 
+  // ending condition
   if (available.size === 0) {
     // this must be a complete path
     const backToStart = [...path, path[0]];
@@ -50,6 +51,7 @@ const dfs = async (points, path = [], visited = null, overallBest = null) => {
     // calculate the cost of this path
     const cost = pathCost(backToStart);
 
+    // Visualizing code
     self.setEvaluatingPath(
       () => ({
         path: { path: backToStart, color: EVALUATING_SEGMENT_COLOR }
@@ -89,6 +91,7 @@ const dfs = async (points, path = [], visited = null, overallBest = null) => {
     visited.delete(p);
     path.pop();
 
+    // Visualizing code
     self.setEvaluatingPath(
       () => ({
         path: { path, color: EVALUATING_SEGMENT_COLOR }
