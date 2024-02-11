@@ -15,26 +15,35 @@ const pointLeft = (points, visited) => {
   return set_of_points;
 };
 
+  // Bright yellow
+  const HILIGHT_YELLOW_COLOR = [255, 255, 0, 240];
+
+  // Bright pink
+  const HILIGHT_PINK_COLOR = [255, 0, 255, 240];
+
+  // Aqua
+  const HILIGHT_AQUA_COLOR = [0, 255, 255, 240];
+
+  // White
+  const HILIGHT_WHITE_COLOR = [255, 255, 255, 240];
+
 const dfs = async (points, pathStack = [], visited = null, overallBest = null) => {
-  console.log("🚀 ~ dfs ~ visited:", visited)
+  // console.log("🚀 ~ dfs ~ points:", points)
   // At the start visite == null
   // At the start pathStack == []
   // At the start overallBest == null
+  // point is fixed data throughtout the recursion
 
-  // console.log("🚀 ~ dfs ~ overallBest:", overallBest)
   // console.log("🚀 ~ dfs ~ pathStack:", pathStack)
-  // console.log("🚀 ~ initial dfs ~ points:", points)
+  // console.log("🚀 ~ dfs ~ visited:", visited)
 
-  // Initiate
+  // Initiate values for the first time
   if (visited === null) {
     // initial call once when point is still an array
     pathStack = [points.shift()];
     points = new Set(points);
     visited = new Set();
   }
-  // console.log("🚀 ~ dfs ~ pathStack:", pathStack)
-  // console.log("🚀 ~ dfs ~ pathStack length:", pathStack.length)
-
 
   // Visualizing code
   self.setEvaluatingPaths(
@@ -42,11 +51,12 @@ const dfs = async (points, pathStack = [], visited = null, overallBest = null) =
       paths: [
         {
           path: pathStack.slice(0, pathStack.length - 1),
-          color: EVALUATING_SEGMENT_COLOR
-        },
+          color: HILIGHT_YELLOW_COLOR
+        }
+        ,
         {
           path: pathStack.slice(pathStack.length - 2, pathStack.length + 1),
-          color: EVALUATING_PATH_COLOR
+          color: HILIGHT_WHITE_COLOR
         }
       ]
     }),
@@ -65,12 +75,17 @@ const dfs = async (points, pathStack = [], visited = null, overallBest = null) =
     // calculate the cost of this pathStack
     const cost = pathCost(backToStart);
 
-    // Visualizing code
-    self.setEvaluatingPath(
+    // Visualizing a complete tour
+    self.setEvaluatingPaths(
       () => ({
-        path: { path: backToStart, color: EVALUATING_SEGMENT_COLOR }
+        paths: [
+          {
+            path: backToStart,
+            color: HILIGHT_AQUA_COLOR
+          }
+        ]
       }),
-      cost
+      2
     );
 
     await self.sleep();
@@ -105,17 +120,29 @@ const dfs = async (points, pathStack = [], visited = null, overallBest = null) =
 
     // go back up and make that point available again
     visited.delete(p);
+
+    // Visualizing code
+    self.setEvaluatingPath(
+      () => ({
+        path: { path: pathStack, color: HILIGHT_PINK_COLOR }
+      }),
+      2
+    );
+    await self.sleep();
+
     pathStack.pop();
 
     // Visualizing code
     self.setEvaluatingPath(
       () => ({
-        path: { path: pathStack, color: EVALUATING_SEGMENT_COLOR }
+        path: { path: pathStack, color: HILIGHT_PINK_COLOR }
       }),
       2
     );
+
     await self.sleep();
   }
+  
   return [bestCost, bestPath];
 };
 
