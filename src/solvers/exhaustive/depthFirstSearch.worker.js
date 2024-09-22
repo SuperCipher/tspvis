@@ -28,19 +28,17 @@ const pointLeft = (points, visited) => {
   const HILIGHT_WHITE_COLOR = [255, 255, 255, 240];
 
 const dfs = async (points, pathStack = [], visited = null, overallBest = null) => {
-  // console.log("🚀 ~ dfs ~ points:", points)
+  console.log("🚀 ~ dfs ~ points >>> :", points)
+  // point will change once then later fixed throughtout the recursion
+
   // At the start visite == null
   // At the start pathStack == []
   // At the start overallBest == null
-  // point is fixed data throughtout the recursion
-
-  // console.log("🚀 ~ dfs ~ pathStack:", pathStack)
-  // console.log("🚀 ~ dfs ~ visited:", visited)
 
   // Initiate values for the first time
   if (visited === null) {
     // initial call once when point is still an array
-    pathStack = [points.shift()];
+    pathStack = [points.shift()]; // Mutate points. Remove the first element and return it
     points = new Set(points);
     visited = new Set();
   }
@@ -66,6 +64,7 @@ const dfs = async (points, pathStack = [], visited = null, overallBest = null) =
 
   // figure out what points are left from this point
   const available = pointLeft(points, visited);
+  console.log("🚀 ~ dfs ~ available:", available)
 
   // ending condition
   if (available.size === 0) {
@@ -100,7 +99,14 @@ const dfs = async (points, pathStack = [], visited = null, overallBest = null) =
   for (const p of available) {
     // go to that point
     visited.add(p);
+    console.log("🚀 ~ dfs ~ visited list :", [...visited].join(' '))
+    console.log("🚀 ~ dfs ~ visited object:", visited)
+    console.log("🚀 ~ dfs ~ visited size:", visited.size)
+
+
+
     pathStack.push(p);
+    console.log("🚀 ~ dfs ~ pathStack:", pathStack)     
 
     // RECURSE - go through all the possible points from that point
     const [curCost, curPath] = await dfs(points, pathStack, visited, overallBest);
@@ -142,7 +148,6 @@ const dfs = async (points, pathStack = [], visited = null, overallBest = null) =
 
     await self.sleep();
   }
-  
   return [bestCost, bestPath];
 };
 
